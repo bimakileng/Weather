@@ -1,13 +1,12 @@
 package agromarketday.com.weather.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import agromarketday.com.weather.R;
 import agromarketday.com.weather.weather.Day;
@@ -15,10 +14,10 @@ import agromarketday.com.weather.weather.Day;
 /**
  * Created by agromarketday on 9/9/16.
  */
-public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
+public class DayAdapter extends BaseAdapter {
 
-    private Day[] mDays;
     private Context mContext;
+    private Day[] mDays;
 
     public DayAdapter(Context context, Day[] days) {
         mContext = context;
@@ -26,60 +25,60 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder> {
     }
 
     @Override
-    public DayViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.daily_list_item, parent, false);
-        DayViewHolder viewHolder = new DayViewHolder(view);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(DayViewHolder holder, int position) {
-        holder.bindDay(mDays[position]);
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return mDays.length;
     }
 
-    public class DayViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    @Override
+    public Object getItem(int position) {
+        return mDays[position];
+    }
 
-        public TextView mTimeLabel;
-        public TextView mSummaryLabel;
-        public TextView mTemperatureLabel;
-        public ImageView mIconImageView;
+    @Override
+    public long getItemId(int position) {
+        return 0; // we aren't going to use this. Tag items for easy reference
+    }
 
-        public DayViewHolder(View itemView) {
-            super(itemView);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-            mTimeLabel = (TextView) itemView.findViewById(R.id.TimeLabel);
-            mSummaryLabel = (TextView) itemView.findViewById(R.id.summaryLabel);
-            mTemperatureLabel = (TextView) itemView.findViewById(R.id.temperatureLabel);
-            mIconImageView = (ImageView) itemView.findViewById(R.id.iconImageView);
+        if (convertView == null) {
+            // brand new
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.daily_list_item, null);
+            holder = new ViewHolder();
+            holder.iconImageView = (ImageView) convertView.findViewById(R.id.iconImageView);
+            holder.temperatureLabel = (TextView) convertView.findViewById(R.id.temperatureLabel);
+            holder.dayLabel = (TextView) convertView.findViewById(R.id.dayNameLabel);
+            holder.summaryLabel = (TextView) convertView.findViewById(R.id.summaryLabeld);
 
-            itemView.setOnClickListener(this);
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        public void bindDay(Day day) {
-            mTimeLabel.setText( day.getDayOfTheWeek());
-            mSummaryLabel.setText(day.getSummary());
-            mTemperatureLabel.setText(day.getTemperatureMax() + "");
-            mIconImageView.setImageResource(day.getIconId());
+        Day day = mDays[position];
+
+        holder.iconImageView.setImageResource(day.getIconId());
+        holder.temperatureLabel.setText(day.getTemperatureMax() + "");
+        holder.summaryLabel.setText(day.getSummary());
+
+        if (position == 0) {
+            holder.dayLabel.setText("Today");
+        }
+        else {
+            holder.dayLabel.setText(day.getDayOfTheWeek());
         }
 
-        @Override
-        public void onClick(View v) {
-            String time = mTimeLabel.getText().toString();
-            String temperature = mTemperatureLabel.getText().toString();
-            String summary = mSummaryLabel.getText().toString();
-            String message = String.format("At %s it will be %s and %s",
-                    time,
-                    temperature,
-                    summary);
-            Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
-        }
+        return convertView;
+    }
+
+    private static class ViewHolder {
+        ImageView iconImageView; // public by default
+        TextView temperatureLabel;
+        TextView dayLabel;
+        TextView summaryLabel;
     }
 }
 

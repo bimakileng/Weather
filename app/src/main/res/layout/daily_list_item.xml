@@ -13,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iconImageView"
-        android:paddingLeft="10dp"
+        android:paddingLeft="4dp"
         android:src="@drawable/clear_day"
-        android:layout_alignParentTop="false"
-        android:layout_toRightOf="@+id/temperatureLabel"
-        android:layout_centerInParent="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="false"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/degreesLabel"
+        android:layout_alignParentLeft="false"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,10 +28,10 @@
         android:textSize="15sp"
         tools:text="Wednesday"
         android:paddingLeft="2dp"
-        android:layout_alignParentRight="true"
         android:paddingRight="4dp"
-        android:layout_centerInParent="true"
-        android:layout_toLeftOf="@+id/summaryLabel"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,9 +40,10 @@
         android:gravity="center"
         android:textColor="#000000"
         tools:text="100"
-        android:layout_alignParentEnd="false"
-        android:textSize="15sp"
-        android:layout_centerInParent="true"/>
+        android:textSize="12sp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/dayNameLabel"
+        android:paddingLeft="4dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,28 +51,22 @@
         android:text=" \u2103"
         android:id="@+id/degreesLabel"
         android:textColor="#000000"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:foregroundGravity="top"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/temperatureLabel"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="false"
-        android:layout_toLeftOf="@+id/iconImageView"
-        />
+        android:layout_alignParentRight="false"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/summaryLabel"
+        android:id="@+id/summaryLabeld"
         tools:text="Partly cloudy"
-        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:textColor="#686464"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/iconImageView"
-        android:layout_toEndOf="@+id/iconImageView"
-        android:layout_centerInParent="true"
-        android:textSize="15sp"
-        android:textColor="#ffffff"
-        android:paddingLeft="14dp"/>
+        android:layout_alignParentRight="true"
+        android:paddingLeft="4dp"/>
 </RelativeLayout>

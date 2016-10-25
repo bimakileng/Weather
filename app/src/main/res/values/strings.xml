@@ -15,5 +15,7 @@
     <string name="Api_key">5eabda3c93b71c40c652facce507c5bc</string>
     <string name="Url_forecast">https://api.darksky.net/forecast/</string>
     <string name="stillLoading">Please wait am still loading....</string>
+    <string name="location_updated_message">Location has been updated</string>
+    <string name="title_activity_location">LocationActivity</string>
 
 </resources>

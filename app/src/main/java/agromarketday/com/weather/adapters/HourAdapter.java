@@ -1,21 +1,20 @@
 package agromarketday.com.weather.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import agromarketday.com.weather.weather.Hour;
 import agromarketday.com.weather.R;
+import agromarketday.com.weather.weather.Hour;
 
 /**
  * Created by agromarketday on 9/9/16.
  */
-public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder> {
+public class HourAdapter extends BaseAdapter {
 
     private Hour[] mHours;
     private Context mContext;
@@ -26,60 +25,60 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder
     }
 
     @Override
-    public HourViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.hourly_list_item, parent, false);
-        HourViewHolder viewHolder = new HourViewHolder(view);
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(HourViewHolder holder, int position) {
-        holder.bindHour(mHours[position]);
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return mHours.length;
     }
 
-    public class HourViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    @Override
+    public Object getItem(int position) {
+        return mHours[position];
+    }
 
-        public TextView mTimeLabel;
-        public TextView mSummaryLabel;
-        public TextView mTemperatureLabel;
-        public ImageView mIconImageView;
+    @Override
+    public long getItemId(int position) {
+        return 0; // we aren't going to use this. Tag items for easy reference
+    }
 
-        public HourViewHolder(View itemView) {
-            super(itemView);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-            mTimeLabel = (TextView) itemView.findViewById(R.id.TimeLabel);
-            mSummaryLabel = (TextView) itemView.findViewById(R.id.summaryLabel);
-            mTemperatureLabel = (TextView) itemView.findViewById(R.id.temperatureLabel);
-            mIconImageView = (ImageView) itemView.findViewById(R.id.iconImageView);
+        if (convertView == null) {
+            // brand new
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.hourly_list_item, null);
+            holder = new ViewHolder();
+            holder.iconImageView = (ImageView) convertView.findViewById(R.id.iconImageView);
+            holder.temperatureLabel = (TextView) convertView.findViewById(R.id.temperatureLabel);
+            holder.timeLabel = (TextView) convertView.findViewById(R.id.TimeLabel);
+            holder.summaryLabel = (TextView) convertView.findViewById(R.id.summaryLabelh);
 
-            itemView.setOnClickListener(this);
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
         }
 
-        public void bindHour(Hour hour) {
-            mTimeLabel.setText(hour.getHour());
-            mSummaryLabel.setText(hour.getSummary());
-            mTemperatureLabel.setText(hour.getTemperature() + "");
-            mIconImageView.setImageResource(hour.getIconId());
+        Hour hour = mHours[position];
+
+        holder.iconImageView.setImageResource(hour.getIconId());
+        holder.temperatureLabel.setText(hour.getTemperature() + "");
+        holder.summaryLabel.setText(hour.getSummary());
+
+        if (position == 0) {
+            holder.timeLabel.setText("Now");
+        }
+        else {
+            holder.timeLabel.setText(hour.getHour());
         }
 
-        @Override
-        public void onClick(View v) {
-            String time = mTimeLabel.getText().toString();
-            String temperature = mTemperatureLabel.getText().toString();
-            String summary = mSummaryLabel.getText().toString();
-            String message = String.format("At %s it will be %s and %s",
-                    time,
-                    temperature,
-                    summary);
-            Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
-        }
+        return convertView;
+    }
+
+    private static class ViewHolder {
+        ImageView iconImageView; // public by default
+        TextView temperatureLabel;
+        TextView timeLabel;
+        TextView summaryLabel;
     }
 }
 

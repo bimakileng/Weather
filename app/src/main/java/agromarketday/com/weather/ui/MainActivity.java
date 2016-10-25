@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,10 +40,9 @@ import agromarketday.com.weather.weather.Forecast;
 import agromarketday.com.weather.weather.Hour;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity{
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
@@ -51,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
     //private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 10000;
 
     private Forecast mForecast;
+    private Button mDailyButton;
+    private Button mHoulrlyButton;
 
     @InjectView(R.id.TimeLabel) TextView mTimeLabel;
     @InjectView(R.id.temperatureLabel) TextView mTemperatureLabel;
@@ -60,19 +62,39 @@ public class MainActivity extends ActionBarActivity {
     @InjectView(R.id.iconImageView) ImageView mIconImageView;
     @InjectView(R.id.refreshImageView) ImageView mRefreshImageView;
     @InjectView(R.id.progressBar) ProgressBar mProgressBar;
+   // @InjectView(R.id.locationLabel) TextView mLocationLabel;
 
+    //View mLocation = findViewById(R.id.locationLabel);
 
-    @Override
+      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-
+        //mLocationLabel.setText(LocationActivity.getCurrentLocation());
         mProgressBar.setVisibility(View.INVISIBLE);
 
-        final double latitude = 0.3167;
-        final double longitude = 32.4167;
+       final long latitude= LocationActivity.getLatitude();
+       final long longitude= LocationActivity.getLongitude();
+
+        mDailyButton = (Button) findViewById(R.id.dailyButton);
+          mDailyButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+                  startDailyActivity();
+              }
+          });
+        mHoulrlyButton = (Button) findViewById(R.id.hourlyButton);
+          mHoulrlyButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
+                  startHourlyActivity();
+              }
+          });
+
+
+
 
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +174,8 @@ public class MainActivity extends ActionBarActivity {
         else {
             Toast.makeText(this, getString(R.string.network_unavailable_message),
                     Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.network_unavailable_message),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -171,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
         Current current = mForecast.getCurrent();
 
         mTemperatureLabel.setText(current.getTemperature() + " ");
-        mTimeLabel.setText( "Updated at "+getTimeAgo(current.getTime()));
+        mTimeLabel.setText( "Updated "+getTimeAgo(current.getTime()));
         mHumidityValue.setText(current.getHumidity() + "");
         mPrecipValue.setText(current.getPrecipChance() + "%");
         mSummaryLabel.setText(current.getSummary());
@@ -302,7 +326,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //Special on click function from butter knife for the daily button
-    @OnClick (R.id.dailyButton)
 
     public void startDailyActivity() {
 
@@ -312,7 +335,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
     //Special on click function from butter knife for the hourly button
-    @OnClick (R.id.hourlyButton)
+
     public void startHourlyActivity() {
 
             Intent intent = new Intent(this, HourlyForecastActivity.class);
@@ -355,9 +378,9 @@ public class MainActivity extends ActionBarActivity {
             timeAgo = "less than a minute";
         } else if (timeDIM == 1) {
             return "1 minute";
-        } else if (timeDIM >= 2 && timeDIM <= 44) {
+        } else if (timeDIM >= 5 && timeDIM <= 40) {
             timeAgo = timeDIM + " minutes";
-        } else if (timeDIM >= 45 && timeDIM <= 89) {
+        } else if (timeDIM >= 41 && timeDIM <= 89) {
             timeAgo = "about an hour";
         } else if (timeDIM >= 90 && timeDIM <= 1439) {
             timeAgo = "about " + (Math.round(timeDIM / 60)) + " hours";
