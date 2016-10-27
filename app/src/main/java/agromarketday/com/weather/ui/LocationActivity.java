@@ -3,9 +3,8 @@ package agromarketday.com.weather.ui;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +21,7 @@ import agromarketday.com.weather.R;
 /**
  * Created by AgroMarketDay on 10/25/2016.
  */
-public class LocationActivity extends ActionBarActivity implements
+public class LocationActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     protected static final String TAG = "location-updates-sample";
@@ -77,29 +76,18 @@ public class LocationActivity extends ActionBarActivity implements
      * Time when the location was updated represented as a String.
      */
     protected static String mLastUpdateTime;
-    public static long mLatitude;
-    public static long mLongitude;
+    public static double mLatitude;
+    public static double mLongitude;
 
 
-    public static long getLongitude() {
+    public static double getLongitude() {
         return mLongitude;
     }
 
-    public static long getLatitude() {
+    public static double getLatitude() {
         return mLatitude;
     }
 
-    public static String getLastUpdateTime() {
-        return mLastUpdateTime;
-    }
-
-    public static String getLocationKey() {
-        return LOCATION_KEY;
-    }
-
-    public Location getCurrentLocation() {
-        return mCurrentLocation;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -158,7 +146,7 @@ public class LocationActivity extends ActionBarActivity implements
         Log.i(TAG, "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
         createLocationRequest();
@@ -191,17 +179,7 @@ public class LocationActivity extends ActionBarActivity implements
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    /**
-     * Handles the Start Updates button and requests start of location updates. Does nothing if
-     * updates have already been requested.
-     */
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            startLocationUpdates();
-        }
+        startLocationUpdates();
     }
 
 
@@ -225,6 +203,8 @@ public class LocationActivity extends ActionBarActivity implements
                 mCurrentLocation.getLongitude()));
         mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTime,
                 mLastUpdateTime));
+        mLatitude=mCurrentLocation.getLatitude();
+        mLongitude=mCurrentLocation.getLongitude();
     }
 
     /**
