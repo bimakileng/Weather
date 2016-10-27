@@ -22,18 +22,11 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,63 +42,68 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends ActionBarActivity{
+public class MainActivity extends ActionBarActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
-   // private static final long MIN_TIME_BW_UPDATES = 1000 ;
+    // private static final long MIN_TIME_BW_UPDATES = 1000 ;
     //private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 10000;
 
     private Forecast mForecast;
     private Button mDailyButton;
     private Button mHoulrlyButton;
 
-    @InjectView(R.id.TimeLabel) TextView mTimeLabel;
-    @InjectView(R.id.temperatureLabel) TextView mTemperatureLabel;
-    @InjectView(R.id.humidityValue) TextView mHumidityValue;
-    @InjectView(R.id.precipValue) TextView mPrecipValue;
-    @InjectView(R.id.summaryLabel) TextView mSummaryLabel;
-    @InjectView(R.id.iconImageView) ImageView mIconImageView;
-    @InjectView(R.id.refreshImageView) ImageView mRefreshImageView;
-    @InjectView(R.id.progressBar) ProgressBar mProgressBar;
-    //@InjectView(R.id.locationLabel) TextView mLocationLabel;
+    @InjectView(R.id.TimeLabel)
+    TextView mTimeLabel;
+    @InjectView(R.id.temperatureLabel)
+    TextView mTemperatureLabel;
+    @InjectView(R.id.humidityValue)
+    TextView mHumidityValue;
+    @InjectView(R.id.precipValue)
+    TextView mPrecipValue;
+    @InjectView(R.id.summaryLabel)
+    TextView mSummaryLabel;
+    @InjectView(R.id.iconImageView)
+    ImageView mIconImageView;
+    @InjectView(R.id.refreshImageView)
+    ImageView mRefreshImageView;
+    @InjectView(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.locationLabel)
+    TextView mLocationLabel;
 
     //View mLocation = findViewById(R.id.locationLabel);
 
-      @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        //mLocationLabel.setText(LocationActivity.getCurrentLocation());
+
         mProgressBar.setVisibility(View.INVISIBLE);
 
-       //final double latitude= LocationActivity.getLatitude();
-      // final double longitude= LocationActivity.getLongitude();
-          final double latitude = 0.3167;
-          final double longitude = 32.4167;
 
-         //String currentLocation = getCurrentLocationViaJSON(latitude, longitude);
-         // mLocationLabel.setText(currentLocation);
+        final double latitude = 0.3167;
+        final double longitude = 32.4167;
+
+
 
         mDailyButton = (Button) findViewById(R.id.dailyButton);
-          mDailyButton.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View view) {
-                  startDailyActivity();
-              }
-          });
+        mDailyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDailyActivity();
+            }
+        });
         mHoulrlyButton = (Button) findViewById(R.id.hourlyButton);
-          mHoulrlyButton.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View view) {
-                  startHourlyActivity();
-              }
-          });
-
-
+        mHoulrlyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startHourlyActivity();
+            }
+        });
 
 
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
@@ -120,12 +118,11 @@ public class MainActivity extends ActionBarActivity{
     }
 
 
-
     //Method that requests forecast information from the API
-    private void getForecast(double latitude,double longitude) {
+    private void getForecast(double latitude, double longitude) {
         String apiKey = getString(R.string.Api_key);
         String forecastUrl = getString(R.string.Url_forecast) + apiKey +
-                "/" + latitude + "," + longitude+"?units=si";
+                "/" + latitude + "," + longitude + "?units=si";
         //Checking for network connectivity
         if (isNetworkAvailable()) {
             toggleRefresh();
@@ -171,11 +168,9 @@ public class MainActivity extends ActionBarActivity{
                         } else {
                             alertUserAboutError();
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         Log.e(TAG, "JSONException caught: ", e);
-                    }
-                    catch (JSONException e) {
+                    } catch (JSONException e) {
                         Log.e(TAG, "JSONException caught: ", e);
 
                     }
@@ -196,18 +191,18 @@ public class MainActivity extends ActionBarActivity{
         if (mProgressBar.getVisibility() == View.INVISIBLE) {
             mProgressBar.setVisibility(View.VISIBLE);
             mRefreshImageView.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             mProgressBar.setVisibility(View.INVISIBLE);
             mRefreshImageView.setVisibility(View.VISIBLE);
         }
     }
+
     //Special method that updates displayed information
     private void updateDisplay() {
         Current current = mForecast.getCurrent();
 
         mTemperatureLabel.setText(current.getTemperature() + " ");
-        mTimeLabel.setText( "Updated "+getTimeAgo(current.getTime()));
+        mTimeLabel.setText("Updated " + getTimeAgo(current.getTime())+" ago");
         mHumidityValue.setText(current.getHumidity() + "");
         mPrecipValue.setText(current.getPrecipChance() + "%");
         mSummaryLabel.setText(current.getSummary());
@@ -216,6 +211,7 @@ public class MainActivity extends ActionBarActivity{
         Drawable drawable = getResources().getDrawable(current.getIconId());
         mIconImageView.setImageDrawable(drawable);
     }
+
     //Method that creates the forecast object
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast forecast = new Forecast();
@@ -223,11 +219,12 @@ public class MainActivity extends ActionBarActivity{
         forecast.setCurrent(getCurrentDetails(jsonData));
         forecast.setHourlyForecast(getHourlyForecast(jsonData));
         forecast.setDailyForecast(getDailyForecast(jsonData));
-      //  forecast.setMinutelyForecast(getMinutelyForecast(jsonData));
+        //  forecast.setMinutelyForecast(getMinutelyForecast(jsonData));
 
 
         return forecast;
     }
+
     //Method that stores the days forecast in an array
     private Day[] getDailyForecast(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
@@ -252,6 +249,7 @@ public class MainActivity extends ActionBarActivity{
 
         return days;
     }
+
     //Method that stores the hours forecast in an array
     private Hour[] getHourlyForecast(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
@@ -268,7 +266,7 @@ public class MainActivity extends ActionBarActivity{
             hour.setIcon(jsonHour.getString("icon"));
             hour.setTemperature(jsonHour.getDouble("temperature"));
             hour.setTime(jsonHour.getLong("time"));
-           // hour.setTimezone(timezone);
+            // hour.setTimezone(timezone);
 
             hours[i] = hour;
         }
@@ -276,25 +274,28 @@ public class MainActivity extends ActionBarActivity{
         return hours;
     }
     //Method that stores the minutes forecast in an array
-  /** private Minute[] getMinutelyForecast(String jsonData) throws JSONException{
-        JSONObject forecast =new JSONObject(jsonData);
-       JSONObject minutely = forecast.getJSONObject("minutely");
-        JSONArray data = minutely.getJSONArray("data");
 
-        Minute[] minutes = new Minute[data.length()];
-        for (int i =0; i < data.length(); i++){
-            JSONObject jsonMinute =data.getJSONObject(i);
-            Minute minute = new Minute();
-
-            minute.setSummary(jsonMinute.getString("summary"));
-            minute.setTime(jsonMinute.getLong("time"));
-            minute.setIcon(jsonMinute.getString("icon"));
-            minute.setPrecipChance(jsonMinute.getLong("precipProbability"));
-            minutes[i] = minute;
-
-        }
-        return minutes;
-    }*/
+    /**
+     * private Minute[] getMinutelyForecast(String jsonData) throws JSONException{
+     * JSONObject forecast =new JSONObject(jsonData);
+     * JSONObject minutely = forecast.getJSONObject("minutely");
+     * JSONArray data = minutely.getJSONArray("data");
+     * <p/>
+     * Minute[] minutes = new Minute[data.length()];
+     * for (int i =0; i < data.length(); i++){
+     * JSONObject jsonMinute =data.getJSONObject(i);
+     * Minute minute = new Minute();
+     * <p/>
+     * minute.setSummary(jsonMinute.getString("summary"));
+     * minute.setTime(jsonMinute.getLong("time"));
+     * minute.setIcon(jsonMinute.getString("icon"));
+     * minute.setPrecipChance(jsonMinute.getLong("precipProbability"));
+     * minutes[i] = minute;
+     * <p/>
+     * }
+     * return minutes;
+     * }
+     */
     //Method that stores the current forecast
     private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
@@ -321,7 +322,7 @@ public class MainActivity extends ActionBarActivity{
     //Method that checks if network is available
     private boolean isNetworkAvailable() {
         ConnectivityManager manager = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE );
+                getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         boolean isAvailable = false;
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -341,21 +342,22 @@ public class MainActivity extends ActionBarActivity{
 
     public void startDailyActivity() {
 
-            Intent intent = new Intent(this, DailyForecastActivity.class);
-            intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
-            startActivity(intent);
+        Intent intent = new Intent(this, DailyForecastActivity.class);
+        intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        startActivity(intent);
 
     }
     //Special on click function from butter knife for the hourly button
 
     public void startHourlyActivity() {
 
-            Intent intent = new Intent(this, HourlyForecastActivity.class);
-            intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
-            startActivity(intent);
+        Intent intent = new Intent(this, HourlyForecastActivity.class);
+        intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
+        startActivity(intent);
 
 
     }
+
     public static String getTimeAgo(long timestamp) {
 
         Calendar cal = Calendar.getInstance();
@@ -370,7 +372,7 @@ public class MainActivity extends ActionBarActivity{
             e.printStackTrace();
         }
 
-        if(date == null) {
+        if (date == null) {
             return null;
         }
 
@@ -414,7 +416,7 @@ public class MainActivity extends ActionBarActivity{
             timeAgo = "about " + (Math.round(timeDIM / 525600)) + " years";
         }
 
-        return timeAgo + " ago";
+        return timeAgo;
     }
 
     public static Date currentDate() {
@@ -427,85 +429,8 @@ public class MainActivity extends ActionBarActivity{
         return Math.round((Math.abs(timeDistance) / 1000) / 60);
     }
 
-    public static JSONObject getLocationInfo(double lat, double lng) {
 
-        HttpGet httpGet = new HttpGet("http://maps.googleapis.com/maps/api/geocode/json?latlng="+ lat+","+lng +"&sensor=true");
-        HttpClient client = new DefaultHttpClient();
-        HttpResponse response;
-        StringBuilder stringBuilder = new StringBuilder();
 
-        try {
-            response = client.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            InputStream stream = entity.getContent();
-            int b;
-            while ((b = stream.read()) != -1) {
-                stringBuilder.append((char) b);
-            }
-        } catch (ClientProtocolException e) {
-        } catch (IOException e) {
-        }
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject = new JSONObject(stringBuilder.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return jsonObject;
-    }
-
-    public static String getCurrentLocationViaJSON(double lat, double lng) {
-
-        JSONObject jsonObj = getLocationInfo(lat, lng);
-        Log.i("JSON string =>", jsonObj.toString());
-
-        String currentLocation = "testing";
-        String street_address = null;
-        String postal_code = null;
-
-        try {
-            String status = jsonObj.getString("status").toString();
-            Log.i("status", status);
-
-            if(status.equalsIgnoreCase("OK")){
-                JSONArray results = jsonObj.getJSONArray("results");
-                int i = 0;
-                Log.i("i", i+ "," + results.length() ); //TODO delete this
-                do{
-
-                    JSONObject r = results.getJSONObject(i);
-                    JSONArray typesArray = r.getJSONArray("types");
-                    String types = typesArray.getString(0);
-
-                    if(types.equalsIgnoreCase("street_address")){
-                        street_address = r.getString("formatted_address").split(",")[0];
-                        Log.i("street_address", street_address);
-                    }else if(types.equalsIgnoreCase("postal_code")){
-                        postal_code = r.getString("formatted_address");
-                        Log.i("postal_code", postal_code);
-                    }
-
-                    if(street_address!=null && postal_code!=null){
-                        currentLocation = street_address + "," + postal_code;
-                        Log.i("Current Location =>", currentLocation); //Delete this
-                        i = results.length();
-                    }
-
-                    i++;
-                }while(i<results.length());
-
-                Log.i("JSON Geo Locatoin =>", currentLocation);
-                return currentLocation;
-            }
-
-        } catch (JSONException e) {
-            Log.e("testing","Failed to load JSON");
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
 
 
